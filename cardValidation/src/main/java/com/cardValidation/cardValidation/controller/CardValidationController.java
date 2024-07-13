@@ -2,6 +2,11 @@ package com.cardValidation.cardValidation.controller;
 
 import com.cardValidation.cardValidation.domain.Card;
 import com.cardValidation.cardValidation.service.CardService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +26,13 @@ public class CardValidationController {
         this.cardService = cardService;
     }
 
+    @Operation(summary = "Validate a card", description = "Validate the provided card details", tags = {"Cards"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Valid card details",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = String.class))}),
+            @ApiResponse(responseCode = "400", description = "Invalid card details or card date is expired",
+                    content = @Content)
+    })
     @PostMapping("/validate")
     public ResponseEntity<String> validateCard(@RequestBody Card cardDetails) {
         Card card = cardService.findByCardNumber(cardDetails.getCardNumber());
